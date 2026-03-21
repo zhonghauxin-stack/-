@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ART_LIKE - Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg: #0a0a12;
+    --surface: #12121e;
+    --surface2: #1a1a2a;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --accent: #6c5ce7;
+    --accent2: #a29bfe;
+    --gold: #f0c040;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.4s, backdrop-filter 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(10,10,18,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--text);
+  }
+  .nav-logo span { color: var(--accent2); }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ===== HERO ===== */
+  .hero {
+    height: 100vh;
+    min-height: 600px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 120px;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: url('assets/mainpic.jpg') center center / cover no-repeat;
+    animation: heroZoom 25s ease-in-out infinite alternate;
+  }
+  @keyframes heroZoom {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10,10,18,0.3) 0%,
+      rgba(10,10,18,0.1) 40%,
+      rgba(10,10,18,0.6) 80%,
+      rgba(10,10,18,1) 100%
+    );
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+  .hero-title {
+    font-size: clamp(40px, 8vw, 80px);
+    font-weight: 700;
+    letter-spacing: 12px;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #fff 0%, var(--accent2) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-dim);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    animation: bounce 2s infinite;
+  }
+  .scroll-hint svg { width: 24px; height: 24px; stroke: var(--text-dim); }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ===== SECTION ===== */
+  .section { padding: 80px 32px; max-width: 1400px; margin: 0 auto; }
+  .section-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-bottom: 48px;
+  }
+
+  /* ===== CATALOG GRID ===== */
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .catalog-card {
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: transform 0.4s, box-shadow 0.4s, border-color 0.4s;
+  }
+  .catalog-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(108,92,231,0.15);
+    border-color: var(--accent);
+  }
+  .catalog-card.featured {
+    grid-column: span 2;
+  }
+  .catalog-card-image {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+  }
+  .catalog-card.featured .catalog-card-image {
+    height: 320px;
+  }
+  .catalog-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s;
+  }
+  .catalog-card:hover .catalog-card-image img {
+    transform: scale(1.05);
+  }
+  .catalog-card-image.lock-card {
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lock-cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+  .catalog-card:hover .lock-cover { opacity: 1; }
+  .card-count {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(10,10,18,0.7);
+    backdrop-filter: blur(8px);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .lock-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(108,92,231,0.8);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+  }
+  .catalog-card-body { padding: 20px; }
+  .catalog-card-body h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .catalog-card-body p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .card-tags span {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* ===== CATEGORY PAGE ===== */
+  .category-page {
+    display: none;
+    min-height: 100vh;
+    padding-top: 80px;
+  }
+  .category-page.active { display: block; }
+  .catalog-page.hidden { display: none; }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-dim);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.3s;
+    margin-bottom: 32px;
+  }
+  .back-btn:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  .cat-header {
+    margin-bottom: 48px;
+  }
+  .cat-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .cat-header p {
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+
+  /* ===== SUB-TABS ===== */
+  .sub-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .sub-tab {
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    transition: all 0.3s;
+  }
+  .sub-tab.active, .sub-tab:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ===== GALLERY ===== */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .gallery-item {
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .gallery-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .gallery-item img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s;
+  }
+  .gallery-item:hover img { transform: scale(1.04); }
+  .gallery-item-label {
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ===== LIGHTBOX ===== */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(20px);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .lightbox.active { display: flex; }
+  .lightbox-img {
+    max-width: 90vw;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 8px;
+    user-select: none;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 20px; right: 24px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+  }
+  .lightbox-close:hover { background: rgba(255,255,255,0.2); }
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+  }
+  .lightbox-nav:hover { background: rgba(255,255,255,0.15); }
+  .lightbox-prev { left: 20px; }
+  .lightbox-next { right: 20px; }
+  .lightbox-counter {
+    margin-top: 16px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ===== PASSWORD MODAL ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(12px);
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+  }
+  .modal-box h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .modal-box p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+  .modal-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 4px;
+    margin-bottom: 16px;
+    transition: border-color 0.3s;
+  }
+  .modal-input:focus { border-color: var(--accent); }
+  .modal-input.error { border-color: #e74c3c; }
+  .modal-submit {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .modal-submit:hover { background: var(--accent2); }
+  .modal-error {
+    color: #e74c3c;
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 40px 32px;
+    color: var(--text-dim);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ===== ANIMATIONS ===== */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .catalog-grid { grid-template-columns: 1fr; }
+    .catalog-card.featured { grid-column: span 1; }
+    .gallery { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 500px) {
+    .section { padding: 48px 16px; }
+    nav { padding: 12px 16px; }
+    .hero { padding-bottom: 80px; }
+    .gallery { grid-template-columns: 1fr 1fr; }
+    .gallery-item img { height: 150px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">ART<span>_</span>LIKE</div>
+  <div class="nav-links">
+    <a href="#" onclick="goHome();return false">总览</a>
+    <a href="#" onclick="openCategory('cat3d');return false">3D</a>
+    <a href="#" onclick="openCategory('catillust');return false">插画</a>
+    <a href="#" onclick="openCategory('catconcept');return false">概念</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-title">ART_LIKE</div>
+    <div class="hero-sub">Game Art & Concept Design</div>
+  </div>
+  <div class="scroll-hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- CATALOG PAGE -->
+<div id="catalogPage" class="catalog-page">
+  <div class="section">
+    <h2 class="section-title">作品总览</h2>
+    <p class="section-desc">点击分类卡片浏览作品</p>
+    <div id="catalogGrid" class="catalog-grid"></div>
+  </div>
+</div>
+
+<!-- CATEGORY DETAIL PAGES (dynamic) -->
+<div id="categoryPage" class="category-page">
+  <div class="section">
+    <div class="back-btn" onclick="goHome()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      返回总览
+    </div>
+    <div id="catHeader" class="cat-header"></div>
+    <div id="subTabs" class="sub-tabs"></div>
+    <div id="gallery" class="gallery"></div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation();navLightbox(-1)">&#8249;</button>
+  <img id="lightboxImg" class="lightbox-img" src="" alt="">
+  <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation();navLightbox(1)">&#8250;</button>
+  <div id="lightboxCounter" class="lightbox-counter"></div>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div id="pwdModal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>🔒 受限访问</h3>
+    <p>此分类需要密码才能查看</p>
+    <input id="pwdInput" class="modal-input" type="password" placeholder="输入密码" autocomplete="off">
+    <button class="modal-submit" onclick="submitPassword()">确认</button>
+    <div id="pwdError" class="modal-error">密码错误，请重试</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2025 ART_LIKE. All rights reserved.</p>
+</footer>
+
+<script>
+const BASE = 'assets';
+const PASSWORD = 'zhonghua2025';
+let isUnlocked = false;
+let pendingCatId = null;
+let currentImages = [];
+let currentLightboxIndex = 0;
+
+// ===== DATA =====
+const CATALOG = [
+  {
+    id: 'cat3d',
+    title: '3D 作品',
+    desc: '三维建模与场景设计',
+    dir: '3D类型',
+    cover: '3D类型/封面.jpg',
+    locked: false,
+    tags: ['3D', '场景', '角色'],
+    subCategories: null,
+    files: [
+      '怪猎 (1).jpeg','怪猎 (2).jpeg','怪猎 (3).jpeg','怪猎 (4).jpeg','怪猎 (5).jpeg',
+      '朋克 (1).jpeg','朋克 (2).jpeg','朋克 (3).jpeg','朋克 (4).jpeg','朋克 (5).jpeg',
+      '欧美卡 (1).jpeg','欧美卡 (2).jpeg','欧美卡 (3).jpeg',
+      '变化风格 (1).jpeg','变化风格 (2).jpeg',
+      'zhanshi (1).jpeg','zhanshi (2).jpeg','zhanshi (3).jpeg'
+    ]
+  },
+  {
+    id: 'catillust',
+    title: '插画作品',
+    desc: '同人创作与个人插画',
+    dir: '原画类手工/插画类',
+    cover: '原画类手工/插画类/封面.jpg',
+    locked: false,
+    tags: ['插画', '同人', '个人创作'],
+    subCategories: null,
+    files: [
+      '女弓箭手_final.jpeg','女弓箭手_process1.jpeg','女弓箭手_process2.jpeg',
+      '同人作品 (1).jpeg','同人作品 (2).jpeg','同人作品 (3).jpeg','同人作品 (4).jpeg',
+      '同人作品 (5).jpeg','同人作品 (6).jpeg','同人作品 (7).jpeg','同人作品 (8).jpeg',
+      '同人作品 (9).jpeg','同人作品 (10).jpeg','同人作品 (11).jpeg',
+      '同人作品 (12).jpeg','同人作品 (13).jpeg','同人作品 (14).jpeg',
+      '同人作品 (15).jpeg','同人作品 (16).jpeg','同人作品 (17).jpeg'
+    ]
+  },
+  {
+    id: 'catconcept',
+    title: '概念设计',
+    desc: '游戏概念设计与美术探索',
+    dir: '原画类手工/概念类',
+    cover: '原画类手工/概念类/封面.jpeg',
+    locked: false,
+    tags: ['概念设计', '游戏美术', '探索'],
+    subCategories: null,
+    files: [
+      '次元宇宙 (1).jpeg','次元宇宙 (1).jpg','次元宇宙 (2).jpeg','次元宇宙 (3).jpeg','次元宇宙 (4).jpeg',
+      '代号nn (1).jpg','代号nn (2).jpg','代号nn (3).jpg','代号nn (4).jpg','代号nn (5).jpg',
+      '代号oo (1).jpeg','代号oo (1).jpg','代号oo (1).png','代号oo (3).jpeg','代号oo (5).png','代号oo (6).png','代号oo (7).png',
+      '反恐行动 (1).jpeg','反恐行动 (11).jpeg','反恐行动 (12).jpeg','反恐行动 (13).jpeg','反恐行动 (14).jpeg','反恐行动 (15).jpeg','反恐行动 (16).jpeg','反恐行动 (17).jpeg','反恐行动 (18).jpeg','反恐行动 (19).jpeg','反恐行动 (20).jpeg',
+      '猫和老鼠 (1).jpeg','猫和老鼠 (1).png','猫和老鼠 (2).jpeg','猫和老鼠 (3).jpeg',
+      '主角3C动作 拷贝.jpg',
+      'BG第二届美术比赛 (1).jpeg','BG第二届美术比赛 (1).png','BG第二届美术比赛 (2).jpeg','BG第二届美术比赛 (2).png','BG第二届美术比赛 (3).jpeg','BG第二届美术比赛 (3).png','BG第二届美术比赛 (4).jpeg'
+    ]
+  },
+  {
+    id: 'catgolden',
+    title: '金铲铲之战',
+    desc: '项目相关美术工作成果',
+    dir: '项目强相关/金铲铲之战',
+    cover: '项目强相关/金铲铲之战/CG创作 (1).jpeg',
+    locked: true,
+    lockIcon: true,
+    featured: true,
+    tags: ['项目', '金铲铲之战', 'TFT'],
+    subCategories: {
+      '脑暴': {
+        files: ['脑暴 (1).jpeg','脑暴 (2).jpeg','脑暴 (3).jpeg','脑暴 (4).jpeg','脑暴 (5).jpeg','脑暴 (6).jpeg','脑暴 (7).jpeg','脑暴 (8).jpeg','脑暴 (9).jpeg','脑暴 (10).jpeg','脑暴 (11).jpeg','脑暴 (12).jpeg','脑暴 (13).jpeg','脑暴 (14).jpeg','脑暴 (15).jpeg']
+      },
+      '棋盘创作': {
+        files: ['棋盘创作 (1).jpeg','棋盘创作 (2).jpeg','棋盘创作 (3).jpeg','棋盘创作 (4).jpeg','棋盘创作 (5).jpeg','棋盘创作 (6).jpeg','棋盘创作 (7).jpeg','棋盘创作 (8).jpeg','棋盘创作 (9).jpeg','棋盘创作 (10).jpeg']
+      },
+      '探索期': {
+        files: ['探索期 (1).jpeg','探索期 (2).jpeg','探索期 (3).jpeg','探索期 (4).jpeg','探索期 (5).jpeg','探索期 (6).jpeg','探索期 (7).jpeg']
+      },
+      '展示类': {
+        files: ['展示类 (1).jpeg','展示类 (2).jpeg','展示类 (3).jpeg','展示类 (4).jpeg','展示类 (5).jpeg','展示类 (6).jpeg','展示类 (7).jpeg','展示类 (8).jpeg','展示类 (9).jpeg']
+      },
+      'CG创作': {
+        files: ['CG创作 (1).jpeg','CG创作 (2).jpeg','CG创作 (3).jpeg','CG创作 (4).jpeg','CG创作 (5).jpeg','CG创作 (6).jpeg','CG创作 (7).jpeg']
+      },
+      '视频记录': {
+        files: []
+      }
+    },
+    files: []
+  },
+  {
+    id: 'catawards',
+    title: '奖项获取',
+    desc: '获奖作品与荣誉记录',
+    dir: '奖项获取',
+    cover: '奖项获取/游戏创作比赛获奖 (1).png',
+    locked: true,
+    lockIcon: true,
+    tags: ['获奖', '荣誉'],
+    subCategories: null,
+    files: [
+      '游戏创作比赛获奖 (1).png','游戏创作比赛获奖 (2).png','游戏创作比赛获奖 (3).png','游戏创作比赛获奖 (4).png',
+      'bg游戏设计获奖 (1).jpeg','bg游戏设计获奖 (2).jpeg','bg游戏设计获奖 (3).jpeg','bg游戏设计获奖 (4).jpeg'
+    ]
+  }
+];
+
+// ===== HELPERS =====
+function fp(dir, file) {
+  return BASE + '/' + dir + '/' + encodeURIComponent(file);
+}
+
+function countItems(cat) {
+  if (cat.subCategories) {
+    return Object.values(cat.subCategories).reduce((s, sub) => s + sub.files.length, 0);
+  }
+  return cat.files.length;
+}
+
+// ===== RENDER CATALOG =====
+function renderCatalog() {
+  const grid = document.getElementById('catalogGrid');
+  grid.innerHTML = CATALOG.map(cat => {
+    const count = countItems(cat);
+    const coverSrc = fp(cat.dir, cat.cover.split('/').pop());
+    const lockOnly = cat.lockIcon;
+    const tagsHTML = cat.tags ? cat.tags.map(t => `<span>${t}</span>`).join('') : '';
+    return `
+      <div class="catalog-card fade-up ${cat.featured ? 'featured' : ''}" onclick="openCategory('${cat.id}')">
+        <div class="catalog-card-image ${lockOnly ? 'lock-card' : ''}">
+          ${lockOnly
+            ? `<div class="lock-cover"><svg viewBox="0 0 48 48" width="48" height="48"><rect x="8" y="22" width="32" height="24" rx="4" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2.5"/><path d="M16 22V14a8 8 0 0 1 16 0v8" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="33" r="3" fill="rgba(255,255,255,0.25)"/></svg></div>`
+            : `<img src="${coverSrc}" alt="${cat.title}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22><rect fill=%22%231a1a24%22 width=%22400%22 height=%22200%22/><text x=%22200%22 y=%22105%22 text-anchor=%22middle%22 fill=%22%23333%22 font-size=%2216%22>${encodeURIComponent(cat.title)}</text></svg>'">`
+          }
+          <span class="card-count">${count} 件</span>
+          ${cat.locked ? '<span class="lock-badge">🔒 受限</span>' : ''}
+        </div>
+        <div class="catalog-card-body">
+          <h3>${cat.title}</h3>
+          <p>${cat.desc}</p>
+          <div class="card-tags">${tagsHTML}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  observeFadeUps();
+}
+
+// ===== OPEN CATEGORY =====
+function openCategory(catId) {
+  const cat = CATALOG.find(c => c.id === catId);
+  if (!cat) return;
+
+  if (cat.locked && !isUnlocked) {
+    pendingCatId = catId;
+    showPasswordModal();
+    return;
+  }
+
+  document.getElementById('catalogPage').classList.add('hidden');
+  const page = document.getElementById('categoryPage');
+  page.classList.add('active');
+
+  // Header
+  const count = countItems(cat);
+  document.getElementById('catHeader').innerHTML = `
+    <h2>${cat.title}</h2>
+    <p>${cat.desc} · ${count} 件作品</p>
+  `;
+
+  // Sub-tabs
+  const tabsEl = document.getElementById('subTabs');
+  if (cat.subCategories && Object.keys(cat.subCategories).length > 0) {
+    const subs = Object.keys(cat.subCategories).filter(k => cat.subCategories[k].files.length > 0);
+    tabsEl.innerHTML = `<div class="sub-tab active" onclick="showSub('all', '${catId}')">全部</div>` +
+      subs.map(s => `<div class="sub-tab" onclick="showSub('${s}', '${catId}')">${s}</div>`).join('');
+  } else {
+    tabsEl.innerHTML = '';
+  }
+
+  // Gallery
+  renderGallery(cat, 'all');
+  window.scrollTo(0, 0);
+}
+
+function renderGallery(cat, sub) {
+  const gallery = document.getElementById('gallery');
+  let items = [];
+
+  if (sub === 'all') {
+    if (cat.subCategories) {
+      for (const [name, data] of Object.entries(cat.subCategories)) {
+        data.files.forEach(f => items.push({ file: f, dir: cat.dir, sub: name }));
+      }
+    } else {
+      cat.files.forEach(f => items.push({ file: f, dir: cat.dir, sub: null }));
+    }
+  } else {
+    if (cat.subCategories && cat.subCategories[sub]) {
+      cat.subCategories[sub].files.forEach(f => items.push({ file: f, dir: cat.dir, sub: sub }));
+    }
+  }
+
+  currentImages = items.map(it => fp(it.dir, it.file));
+
+  gallery.innerHTML = items.map((it, i) => `
+    <div class="gallery-item fade-up" onclick="openLightbox(${i})">
+      <img src="${fp(it.dir, it.file)}" alt="${it.file}" loading="lazy" onerror="this.parentElement.style.display='none'">
+      <div class="gallery-item-label">${it.sub ? '[' + it.sub + '] ' : ''}${it.file}</div>
+    </div>
+  `).join('');
+  observeFadeUps();
+}
+
+function showSub(sub, catId) {
+  document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  const cat = CATALOG.find(c => c.id === catId);
+  renderGallery(cat, sub);
+}
+
+// ===== HOME =====
+function goHome() {
+  document.getElementById('categoryPage').classList.remove('active');
+  document.getElementById('catalogPage').classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+// ===== LIGHTBOX =====
+function openLightbox(index) {
+  currentLightboxIndex = index;
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lightboxImg').src = currentImages[index];
+  document.getElementById('lightboxCounter').textContent = `${index + 1} / ${currentImages.length}`;
+  lb.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox')) return;
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('active')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navLightbox(-1);
+  if (e.key === 'ArrowRight') navLightbox(1);
+});
+
+function navLightbox(dir) {
+  currentLightboxIndex = (currentLightboxIndex + dir + currentImages.length) % currentImages.length;
+  document.getElementById('lightboxImg').src = currentImages[currentLightboxIndex];
+  document.getElementById('lightboxCounter').textContent = `${currentLightboxIndex + 1} / ${currentImages.length}`;
+}
+
+// ===== PASSWORD =====
+function showPasswordModal() {
+  document.getElementById('pwdModal').classList.add('active');
+  document.getElementById('pwdInput').value = '';
+  document.getElementById('pwdError').style.display = 'none';
+  document.getElementById('pwdInput').classList.remove('error');
+  setTimeout(() => document.getElementById('pwdInput').focus(), 100);
+}
+
+function submitPassword() {
+  const val = document.getElementById('pwdInput').value;
+  if (val === PASSWORD) {
+    isUnlocked = true;
+    document.getElementById('pwdModal').classList.remove('active');
+    if (pendingCatId) openCategory(pendingCatId);
+    pendingCatId = null;
+  } else {
+    document.getElementById('pwdError').style.display = 'block';
+    document.getElementById('pwdInput').classList.add('error');
+    document.getElementById('pwdInput').focus();
+  }
+}
+document.getElementById('pwdInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitPassword();
+});
+
+// ===== SCROLL ANIMATIONS =====
+function observeFadeUps() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((en, i) => {
+      if (en.isIntersecting) {
+        setTimeout(() => en.target.classList.add('visible'), i * 80);
+        obs.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up:not(.visible)').forEach(el => obs.observe(el));
+}
+
+// NAV scroll effect
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ===== INIT =====
+renderCatalog();
+</script>
+</body>
+</html>
