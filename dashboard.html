@@ -853,10 +853,11 @@ function goHome() {
 function goBack() {
   document.getElementById('categoryPage').classList.remove('active');
   document.getElementById('catalogPage').classList.remove('hidden');
-  // Scroll to catalog section, skip the hero
+  // Scroll past the hero, to the catalog content area
   const catalogEl = document.getElementById('catalogPage');
   if (catalogEl) {
-    catalogEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const y = catalogEl.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top: y, behavior: 'smooth' });
   }
 }
 
