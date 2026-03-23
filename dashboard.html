@@ -337,6 +337,22 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .gallery-item.is-video { position: relative; }
+  .gallery-item.is-video img { filter: brightness(0.7); }
+  .gallery-item .play-icon {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(108,92,231,0.85); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .gallery-item .play-icon::after {
+    content: ''; display: block;
+    width: 0; height: 0;
+    border-style: solid; border-width: 10px 0 10px 18px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 3px;
+  }
 
   /* ===== LIGHTBOX ===== */
   .lightbox {
@@ -357,6 +373,13 @@
     object-fit: contain;
     border-radius: 8px;
     user-select: none;
+  }
+  .lightbox-video {
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 8px;
+    outline: none;
+    background: #000;
   }
   .lightbox-close {
     position: absolute;
@@ -554,6 +577,7 @@
   <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
   <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation();navLightbox(-1)">&#8249;</button>
   <img id="lightboxImg" class="lightbox-img" src="" alt="">
+  <video id="lightboxVideo" class="lightbox-video" controls playsinline style="display:none"></video>
   <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation();navLightbox(1)">&#8250;</button>
   <div id="lightboxCounter" class="lightbox-counter"></div>
 </div>
@@ -580,6 +604,7 @@ const PASSWORD = 'zhonghua2025';
 let isUnlocked = false;
 let pendingCatId = null;
 let currentImages = [];
+let currentIsVideo = [];
 let currentLightboxIndex = 0;
 
 // ===== DATA =====
@@ -633,8 +658,8 @@ const CATALOG = [
     subCategories: null,
     files: [
       '次元宇宙 (1).jpeg','次元宇宙 (1).jpg','次元宇宙 (3).jpeg',
-      '代号nn (1).jpg','代号nn (2).jpg','代号nn (3).jpg','代号nn (4).jpg','代号nn (5).jpg',
-      '代号oo (1).jpeg','代号oo (1).jpg','代号oo (1).png','代号oo (3).jpeg','代号oo (5).png','代号oo (6).png','代号oo (7).png',
+      '代号nn (1).jpg','代号nn (2).jpg','代号nn (3).jpg','代号nn (4).jpg','代号nn (5).jpg','代号nn (1).mp4',
+      '代号oo (1).jpeg','代号oo (1).jpg','代号oo (1).png','代号oo (3).jpeg','代号oo (5).png','代号oo (6).png','代号oo (7).png','代号oo (1).mp4',
       '反恐行动 (1).jpeg','反恐行动 (11).jpeg','反恐行动 (12).jpeg','反恐行动 (13).jpeg','反恐行动 (14).jpeg','反恐行动 (15).jpeg','反恐行动 (16).jpeg','反恐行动 (17).jpeg','反恐行动 (18).jpeg','反恐行动 (19).jpeg','反恐行动 (20).jpeg',
       '猫和老鼠 (1).jpeg','猫和老鼠 (1).png','猫和老鼠 (2).jpeg','猫和老鼠 (3).jpeg',
       '主角3C动作 拷贝.jpg',
@@ -656,19 +681,19 @@ const CATALOG = [
         files: ['脑暴 (1).gif','脑暴 (1).jpeg','脑暴 (1).png','脑暴 (2).gif','脑暴 (2).jpeg','脑暴 (3).jpeg','脑暴 (4).jpeg','脑暴 (5).jpeg','脑暴 (6).jpeg','脑暴 (7).jpeg','脑暴 (8).jpeg','脑暴 (9).jpeg','脑暴 (10).jpeg','脑暴 (11).jpeg','脑暴 (12).jpeg','脑暴 (13).jpeg']
       },
       '棋盘创作': {
-        files: ['棋盘创作 (1).jpeg','棋盘创作 (1).jpg','棋盘创作 (2).jpg']
+        files: ['棋盘创作 (1).jpeg','棋盘创作 (1).jpg','棋盘创作 (2).jpg','主界面绘制.mp4']
       },
       '探索期': {
-        files: ['探索期 (1).jpeg','探索期 (2).jpeg','探索期 (3).jpeg','探索期 (4).jpeg','探索期 (5).jpeg','探索期 (6).jpeg','探索期 (7).jpeg']
+        files: ['探索期 (1).jpeg','探索期 (2).jpeg','探索期 (3).jpeg','探索期 (4).jpeg','探索期 (5).jpeg','探索期 (6).jpeg','探索期 (7).jpeg','质感早期.mp4','质感远古期.mp4']
       },
       '展示类': {
         files: ['展示类 (1).gif','展示类 (1).jpeg','展示类 (1).png','展示类 (2).jpeg','展示类 (2).png','展示类 (3).jpeg','展示类 (3).png']
       },
       'CG创作': {
-        files: ['CG创作 (1).jpeg','CG创作 (2).jpeg','CG创作 (3).jpeg','CG创作 (4).jpeg','CG创作 (5).jpeg','CG创作 (6).jpeg','CG创作 (7).jpeg','CG创作 (8).jpeg']
+        files: ['CG创作 (1).jpeg','CG创作 (2).jpeg','CG创作 (3).jpeg','CG创作 (4).jpeg','CG创作 (5).jpeg','CG创作 (6).jpeg','CG创作 (7).jpeg','CG创作 (8).jpeg','头部_我干了啥.mp4']
       },
       '视频记录': {
-        files: []
+        files: ['自我介绍.mp4']
       }
     },
     files: []
@@ -787,13 +812,26 @@ function renderGallery(cat, sub) {
   }
 
   currentImages = items.map(it => fp(it.dir, it.file));
+  // Track which items are videos
+  currentIsVideo = items.map(it => /\.(mp4|webm|mov|avi|mkv)$/i.test(it.file));
 
-  gallery.innerHTML = items.map((it, i) => `
-    <div class="gallery-item fade-up" onclick="openLightbox(${i})">
-      <img src="${fp(it.dir, it.file)}" alt="${it.file}" loading="lazy" onerror="this.parentElement.style.display='none'">
-      <div class="gallery-item-label">${it.sub ? '[' + it.sub + '] ' : ''}${it.file}</div>
-    </div>
-  `).join('');
+  gallery.innerHTML = items.map((it, i) => {
+    const isVideo = currentIsVideo[i];
+    const src = currentImages[i];
+    if (isVideo) {
+      return `
+        <div class="gallery-item is-video fade-up" onclick="openLightbox(${i})">
+          <video src="${src}" preload="metadata" muted></video>
+          <div class="play-icon"></div>
+          <div class="gallery-item-label">${it.sub ? '[' + it.sub + '] ' : ''}${it.file}</div>
+        </div>`;
+    }
+    return `
+      <div class="gallery-item fade-up" onclick="openLightbox(${i})">
+        <img src="${src}" alt="${it.file}" loading="lazy" onerror="this.parentElement.style.display='none'">
+        <div class="gallery-item-label">${it.sub ? '[' + it.sub + '] ' : ''}${it.file}</div>
+      </div>`;
+  }).join('');
   observeFadeUps();
 }
 
@@ -826,7 +864,21 @@ function goBack() {
 function openLightbox(index) {
   currentLightboxIndex = index;
   const lb = document.getElementById('lightbox');
-  document.getElementById('lightboxImg').src = currentImages[index];
+  const imgEl = document.getElementById('lightboxImg');
+  const vidEl = document.getElementById('lightboxVideo');
+
+  if (currentIsVideo[index]) {
+    imgEl.style.display = 'none';
+    vidEl.style.display = 'block';
+    vidEl.src = currentImages[index];
+    vidEl.play().catch(() => {});
+  } else {
+    vidEl.style.display = 'none';
+    vidEl.pause();
+    vidEl.src = '';
+    imgEl.style.display = 'block';
+    imgEl.src = currentImages[index];
+  }
   document.getElementById('lightboxCounter').textContent = `${index + 1} / ${currentImages.length}`;
   lb.classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -834,6 +886,9 @@ function openLightbox(index) {
 
 function closeLightbox(e) {
   if (e && e.target !== document.getElementById('lightbox')) return;
+  const vidEl = document.getElementById('lightboxVideo');
+  vidEl.pause();
+  vidEl.src = '';
   document.getElementById('lightbox').classList.remove('active');
   document.body.style.overflow = '';
 }
@@ -846,7 +901,21 @@ document.addEventListener('keydown', e => {
 
 function navLightbox(dir) {
   currentLightboxIndex = (currentLightboxIndex + dir + currentImages.length) % currentImages.length;
-  document.getElementById('lightboxImg').src = currentImages[currentLightboxIndex];
+  const imgEl = document.getElementById('lightboxImg');
+  const vidEl = document.getElementById('lightboxVideo');
+
+  if (currentIsVideo[currentLightboxIndex]) {
+    imgEl.style.display = 'none';
+    vidEl.style.display = 'block';
+    vidEl.src = currentImages[currentLightboxIndex];
+    vidEl.play().catch(() => {});
+  } else {
+    vidEl.style.display = 'none';
+    vidEl.pause();
+    vidEl.src = '';
+    imgEl.style.display = 'block';
+    imgEl.src = currentImages[currentLightboxIndex];
+  }
   document.getElementById('lightboxCounter').textContent = `${currentLightboxIndex + 1} / ${currentImages.length}`;
 }
 
