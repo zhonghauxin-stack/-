@@ -791,7 +791,8 @@ function openCategory(catId) {
 
   // Gallery
   renderGallery(cat, 'all');
-  // Category page content starts at top, just reset scroll
+  // Hide hero when entering category, reset scroll
+  document.querySelector('.hero').style.display = 'none';
   window.scrollTo(0, 0);
 }
 
@@ -848,6 +849,7 @@ function showSub(sub, catId) {
 function goHome() {
   document.getElementById('categoryPage').classList.remove('active');
   document.getElementById('catalogPage').classList.remove('hidden');
+  document.querySelector('.hero').style.display = '';
   const catalogEl = document.getElementById('catalogPage');
   if (catalogEl) {
     const y = catalogEl.getBoundingClientRect().top + window.scrollY - 80;
@@ -859,7 +861,7 @@ function goHome() {
 function goBack() {
   document.getElementById('categoryPage').classList.remove('active');
   document.getElementById('catalogPage').classList.remove('hidden');
-  // Scroll past the hero, to the catalog content area
+  document.querySelector('.hero').style.display = '';
   const catalogEl = document.getElementById('catalogPage');
   if (catalogEl) {
     const y = catalogEl.getBoundingClientRect().top + window.scrollY - 80;
