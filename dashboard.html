@@ -790,7 +790,7 @@ function openCategory(catId) {
 
   // Gallery
   renderGallery(cat, 'all');
-  window.scrollTo(0, 0);
+  window.scrollTo({ top: 80, behavior: 'smooth' });
 }
 
 function renderGallery(cat, sub) {
@@ -846,7 +846,11 @@ function showSub(sub, catId) {
 function goHome() {
   document.getElementById('categoryPage').classList.remove('active');
   document.getElementById('catalogPage').classList.remove('hidden');
-  window.scrollTo(0, 0);
+  const catalogEl = document.getElementById('catalogPage');
+  if (catalogEl) {
+    const y = catalogEl.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
 }
 
 // ===== BACK (browser history) =====
