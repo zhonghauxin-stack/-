@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ART_LIKE - Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg: #0a0a12;
+    --surface: #12121e;
+    --surface2: #1a1a2a;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --accent: #6c5ce7;
+    --accent2: #a29bfe;
+    --gold: #f0c040;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.4s, backdrop-filter 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(10,10,18,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--text);
+  }
+  .nav-logo span { color: var(--accent2); }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ===== HERO ===== */
+  .hero {
+    height: 100vh;
+    min-height: 600px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 120px;
+    background: var(--bg);
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: url('assets/mainpic.jpg') center center / contain no-repeat;
+    background-color: var(--bg);
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10,10,18,0.15) 0%,
+      transparent 30%,
+      transparent 50%,
+      rgba(10,10,18,0.5) 80%,
+      rgba(10,10,18,0.95) 100%
+    );
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+  .hero-title {
+    font-size: clamp(40px, 8vw, 80px);
+    font-weight: 700;
+    letter-spacing: 12px;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #fff 0%, var(--accent2) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-dim);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    animation: bounce 2s infinite;
+  }
+  .scroll-hint svg { width: 24px; height: 24px; stroke: var(--text-dim); }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ===== SECTION ===== */
+  .section { padding: 80px 32px; max-width: 1400px; margin: 0 auto; }
+  .section-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-bottom: 48px;
+  }
+
+  /* ===== CATALOG GRID ===== */
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .catalog-card {
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: transform 0.4s, box-shadow 0.4s, border-color 0.4s;
+  }
+  .catalog-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(108,92,231,0.15);
+    border-color: var(--accent);
+  }
+  .catalog-card.featured {
+    grid-column: span 2;
+  }
+  .catalog-card-image {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+  }
+  .catalog-card.featured .catalog-card-image {
+    height: 320px;
+  }
+  .catalog-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.6s;
+  }
+  .catalog-card:hover .catalog-card-image img {
+    transform: scale(1.05);
+  }
+  .card-count {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(10,10,18,0.7);
+    backdrop-filter: blur(8px);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .catalog-card-body { padding: 20px; }
+  .catalog-card-body h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .catalog-card-body p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .card-tags span {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* ===== 首页：大分类分区（按文件夹层级） ===== */
+  .cat-block { margin-bottom: 56px; }
+  .cat-block + .cat-block {
+    padding-top: 56px;
+    border-top: 1px solid var(--border);
+  }
+  .cat-block-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 6px;
+  }
+  .cat-block-title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .cat-block-title h3 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .cat-block-title .cat-num {
+    font-size: 12px;
+    color: var(--accent2);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+  .cat-block-desc {
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  /* 首页：没有子文件夹的大分类直接铺作品 */
+  .home-thumbs { margin-top: 2px; }
+  .cat-rule {
+    height: 1px;
+    background: linear-gradient(to right, rgba(108,92,231,0.5), transparent);
+    margin: 0 0 20px;
+  }
+
+  /* 自我介绍 */
+  .about-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 720px;
+    margin: -36px auto 48px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    z-index: 2;
+  }
+  .about-avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(108,92,231,0.65);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+    flex-shrink: 0;
+  }
+  .about-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .about-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-dim);
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    transition: all 0.2s ease;
+  }
+  .about-link:hover {
+    color: #fff;
+    border-color: rgba(108,92,231,0.7);
+    background: rgba(108,92,231,0.12);
+  }
+  .about-link svg { width: 15px; height: 15px; }
+
+  /* 子分类卡片 */
+  .sub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .sub-card {
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: transform 0.35s, box-shadow 0.35s, border-color 0.35s;
+  }
+  .sub-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(108,92,231,0.12);
+    border-color: var(--accent);
+  }
+  .sub-card-image {
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    position: relative;
+    background: var(--surface2);
+  }
+  .sub-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    transition: transform 0.5s;
+  }
+  .sub-card:hover .sub-card-image img { transform: scale(1.05); }
+  .sub-card-count {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: rgba(10,10,18,0.75);
+    backdrop-filter: blur(6px);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .sub-card-body { padding: 14px 16px; }
+  .sub-card-body h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .sub-card-body span {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* ===== 分类页：子分类分组 ===== */
+  .gallery-groups { }
+  .sub-group { margin-bottom: 40px; }
+  .sub-group + .sub-group {
+    padding-top: 36px;
+    border-top: 1px dashed var(--border);
+  }
+  .sub-group-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .sub-group-head h4 {
+    font-size: 17px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .sub-group-head .sub-group-count {
+    font-size: 12px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .sub-group-head .sub-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ===== CATEGORY PAGE ===== */
+  .category-page {
+    display: none;
+    min-height: 100vh;
+    padding-top: 80px;
+  }
+  .category-page.active { display: block; }
+  .catalog-page.hidden { display: none; }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-dim);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.3s;
+    margin-bottom: 32px;
+  }
+  .back-btn:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  .cat-header {
+    margin-bottom: 48px;
+  }
+  .cat-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .cat-header p {
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+
+  /* ===== SUB-TABS ===== */
+  .sub-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .sub-tab {
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    transition: all 0.3s;
+  }
+  .sub-tab.active, .sub-tab:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ===== GALLERY ===== */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .gallery-item {
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .gallery-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .gallery-item img,
+  .gallery-item video {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    transition: transform 0.5s;
+  }
+  .gallery-item:hover img { transform: scale(1.04); }
+  .gallery-item-label {
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .gallery-item.is-video { position: relative; }
+  .gallery-item.is-video img { filter: brightness(0.7); }
+  .gallery-item .play-icon {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(108,92,231,0.85); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .gallery-item .play-icon::after {
+    content: ''; display: block;
+    width: 0; height: 0;
+    border-style: solid; border-width: 10px 0 10px 18px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 3px;
+  }
+
+  /* ===== LIGHTBOX ===== */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(20px);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .lightbox.active { display: flex; }
+  .lightbox-img {
+    max-width: 90vw;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 8px;
+    user-select: none;
+  }
+  .lightbox-video {
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 8px;
+    outline: none;
+    background: #000;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 20px; right: 24px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+  }
+  .lightbox-close:hover { background: rgba(255,255,255,0.2); }
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+  }
+  .lightbox-nav:hover { background: rgba(255,255,255,0.15); }
+  .lightbox-prev { left: 20px; }
+  .lightbox-next { right: 20px; }
+  .lightbox-counter {
+    margin-top: 16px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 40px 32px;
+    color: var(--text-dim);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ===== ANIMATIONS ===== */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .catalog-grid { grid-template-columns: 1fr; }
+    .catalog-card.featured { grid-column: span 1; }
+    .gallery { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 500px) {
+    .section { padding: 48px 16px; }
+    nav { padding: 12px 16px; }
+    .hero { padding-bottom: 80px; }
+    .gallery { grid-template-columns: 1fr 1fr; }
+    .gallery-item img, .gallery-item video { height: 150px; }
+    .cat-block-desc { padding-left: 0; }
+    .cat-block-title h3 { font-size: 20px; }
+    .sub-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">ART<span>_</span>LIKE</div>
+  <div class="nav-links">
+    <a href="#" onclick="goHome();return false">总览</a>
+    <a href="#" onclick="openCategory('cat3d');return false">3D</a>
+    <a href="#" onclick="openCategory('catillust');return false">插画</a>
+    <a href="#" onclick="openCategory('catconcept');return false">概念</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-title">ART_LIKE</div>
+    <div class="hero-sub">Game Art & Concept Design</div>
+  </div>
+  <div class="scroll-hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about">
+  <div class="about-card">
+    <img class="about-avatar" src="assets/avatar.jpg" alt="zhonghuaxin">
+    <div class="about-info">
+      <div class="about-name">zhonghuaxin</div>
+      <a class="about-link" href="https://zhong2520.artstation.com" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        zhong2520.artstation.com
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CATALOG PAGE -->
+<div id="catalogPage" class="catalog-page">
+  <div class="section">
+    <h2 class="section-title">作品总览</h2>
+    <p class="section-desc">点击分类卡片浏览作品</p>
+    <div id="catalogGrid" class="cat-sections"></div>
+  </div>
+</div>
+
+<!-- CATEGORY DETAIL PAGES (dynamic) -->
+<div id="categoryPage" class="category-page">
+  <div class="section">
+    <div class="back-btn" onclick="goBack()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      返回总览
+    </div>
+    <div id="catHeader" class="cat-header"></div>
+    <div id="subTabs" class="sub-tabs"></div>
+    <div id="gallery" class="gallery-groups"></div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation();navLightbox(-1)">&#8249;</button>
+  <img id="lightboxImg" class="lightbox-img" src="" alt="">
+  <video id="lightboxVideo" class="lightbox-video" controls playsinline style="display:none"></video>
+  <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation();navLightbox(1)">&#8250;</button>
+  <div id="lightboxCounter" class="lightbox-counter"></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2025 ART_LIKE. All rights reserved.</p>
+</footer>
+
+<script>
+const BASE = 'assets';
+let currentImages = [];
+let currentIsVideo = [];
+let currentLightboxIndex = 0;
+
+// ===== DATA =====
+const CATALOG = [
+  {
+    id: 'cat3d',
+    title: '3D 作品',
+    desc: '三维场景与角色制作',
+    dir: '3D类型项目无关',
+    cover: '3D类型项目无关/怪猎 (1)_封面.jpeg',
+    locked: false,
+    tags: ['3D', '场景', '角色'],
+    subCategories: null,
+    files: [
+      'image168.jpeg','image169.jpeg','zhanshi (1).jpeg','zhanshi (2).jpeg','变化风格 (1).png','变化风格 (2).png','变化风格 (3).png','变化风格 (4).png','封面.jpg',
+      '怪猎 (1).png','怪猎 (1)_封面.jpeg','怪猎 (2).jpeg','怪猎 (2).jpg','怪猎 (3).jpg','早期metahuman (1).png','早期metahuman (2).png','朋克 (1).jpg','朋克 (2).jpeg',
+      '欧美卡 (1).jpeg','欧美卡 (2).jpeg'
+    ]
+  },
+  {
+    id: 'catillust',
+    title: '插画',
+    desc: '个人插画与氛围创作',
+    dir: '原画类手工/插画类',
+    cover: '原画类手工/插画类/image219.jpeg',
+    locked: false,
+    tags: ['插画', '氛围', '个人创作'],
+    subCategories: null,
+    files: [
+      'image219.jpeg','image220.jpg','image221.jpeg','同人作品羊角女(1).jpeg','同人作品羊角女_final.jpg','同人庆生_final.jpeg','同人庆生（1）.png','同人阿狸 (1).png',
+      '同人阿狸_final.jpg','同仁天龙(1).png','同仁天龙_final.jpeg','女弓箭手_final.jpeg','明日之后同人 (1).jpeg','明日之后同人_final.jpeg','铲子同人 (1).jpeg','铲子同人 (2).jpeg',
+      '铲子同人_final.jpeg'
+    ]
+  },
+  {
+    id: 'catconcept',
+    title: '概念设计',
+    desc: '游戏概念设计与美术探索',
+    dir: '原画类手工/概念类',
+    cover: '原画类手工/概念类/小故事概念/1_封面.jpg',
+    locked: false,
+    tags: ['概念设计', '游戏美术', '探索'],
+    subCategories: {
+      'OG项目1 写实二次元': {
+        dir: '原画类手工/概念类/OG项目1（写实二次元方向）',
+        cover: 'gainianchangjing01 _封面.jpg',
+        files: [
+          '11.jpg','gainianchangjing01 _封面.jpg','juese suofang.jpg','主角3C动作 拷贝.jpg','代号nn (1).jpg','代号nn (2).jpg','代号nn (3).jpg','代号nn (4).jpg',
+          '代号nn (5).jpg','设计影响因素配比.jpg','风格探索录制视频.mp4'
+        ]
+      },
+      '反恐行动手游': {
+        dir: '原画类手工/概念类/反恐行动手游概念',
+        cover: '反恐行动 (16)_封面.jpeg',
+        files: [
+          '反恐行动 (1).jpeg','反恐行动 (11).jpeg','反恐行动 (12).jpeg','反恐行动 (13).jpeg','反恐行动 (14).jpeg','反恐行动 (15).jpeg','反恐行动 (16)_封面.jpeg','反恐行动 (17).jpeg',
+          '反恐行动 (18).jpeg','反恐行动 (19).jpeg','反恐行动 (20).jpeg'
+        ]
+      },
+      'OG项目2 写实': {
+        dir: '原画类手工/概念类/og项目2（写实方向）',
+        cover: '代号oo (5)_封面.png',
+        files: [
+          '代号oo (1).jpeg','代号oo (1).jpg','代号oo (1).png','代号oo (3).jpeg','代号oo (5)_封面.png','代号oo (6).jpg'
+        ]
+      },
+      '光子美术大赛': {
+        dir: '原画类手工/概念类/光子美术大赛',
+        cover: 'BG第二届美术比赛 (4)_封面.jpeg',
+        files: [
+          'BG第二届美术比赛 (1).jpeg','BG第二届美术比赛 (1).jpg','BG第二届美术比赛 (2).jpeg','BG第二届美术比赛 (2).jpg','BG第二届美术比赛 (3).jpg','BG第二届美术比赛 (3)_2.jpg',
+          'BG第二届美术比赛 (4)_封面.jpeg'
+        ]
+      },
+      '小故事概念': {
+        dir: '原画类手工/概念类/小故事概念',
+        cover: '1_封面.jpg',
+        files: [
+          '1_封面.jpg','ai的天下.jpeg','猫和老鼠 (1).jpeg','猫和老鼠 (1).jpg','猫和老鼠 (2).jpeg','猫和老鼠 (3).jpeg'
+        ]
+      },
+      '次元宇宙': {
+        dir: '原画类手工/概念类/次元宇宙（个人）',
+        files: [
+          '次元宇宙 (1).jpeg','次元宇宙 (1).jpg','次元宇宙 (3).jpeg'
+        ]
+      }
+    },
+    files: []
+  },
+  {
+    id: 'catog',
+    title: 'OG 项目',
+    desc: 'OG 项目美术方向与风格探索',
+    dir: '项目强相关/OG',
+    cover: '项目强相关/OG/og二游方向 (11)_封面.png',
+    locked: false,
+    tags: ['项目', 'OG', '风格探索'],
+    subCategories: null,
+    files: [
+      'og二游方向 (1).mp4','og二游方向 (1).png','og二游方向 (3).mp4','og二游方向 (10).png','og二游方向 (11)_封面.png','og二游方向 (12).jpg','og二游方向 (14).png','og二游方向 (15).jpg',
+      'og二游方向 (16).png','og二游方向 (17).png','og二游方向 (18).png','og二游方向 (19).png','og二游方向 (20).jpg','og手绘序列帧二游方向 (1).gif'
+    ]
+  },
+  {
+    id: 'catgolden',
+    title: '金铲铲之战',
+    desc: '项目相关美术工作成果',
+    dir: '项目强相关/金铲铲之战',
+    cover: '项目强相关/金铲铲之战/起步期/棋盘创作 (2)_封面.jpg',
+    locked: false,
+    featured: true,
+    tags: ['项目', '金铲铲之战', 'TFT'],
+    subCategories: {
+      '起步期': {
+        dir: '项目强相关/金铲铲之战/起步期',
+        cover: '棋盘创作 (2)_封面.jpg',
+        files: [
+          'CG创作 (1).jpeg','CG创作 (2).jpeg','CG创作 (3).jpeg','CG创作 (4).jpeg','CG创作 (5).jpeg','CG创作 (6).jpeg','CG创作 (7).jpeg','CG创作 (8).jpeg','主界面绘制.mp4',
+          '头部_我干了啥.mp4','展示类 (1).gif','展示类 (1).jpeg','展示类 (1).png','展示类 (2).jpeg','展示类 (2).png','展示类 (3).jpeg','展示类 (3).png','探索期 (1).jpeg',
+          '探索期 (2).jpeg','探索期 (3).jpeg','探索期 (4).jpeg','探索期 (5).jpeg','探索期 (6).jpeg','探索期 (7).jpeg','棋盘创作 (1).jpeg','棋盘创作 (1).jpg','棋盘创作 (2)_封面.jpg',
+          '脑暴 (1).gif','脑暴 (1).jpeg','脑暴 (1).png','脑暴 (2).gif','脑暴 (2).jpeg','脑暴 (3).jpeg','脑暴 (4).jpeg','脑暴 (5).jpeg','脑暴 (6).jpeg','脑暴 (7).jpeg',
+          '脑暴 (8).jpeg','脑暴 (9).jpeg','脑暴 (10).jpeg','脑暴 (11).jpeg','脑暴 (12).jpeg','脑暴 (13).jpeg','脑暴 (14）.png','质感早期.mp4','质感远古期.mp4'
+        ]
+      },
+      'PC起步': {
+        dir: '项目强相关/金铲铲之战/PC起步',
+        cover: '弗雷尔卓德扩_封面.jpg',
+        files: [
+          '先画底稿（ai配合）.mp4','弗雷尔卓德扩_封面.jpg','故事性spine探索（ai配合）.mp4','故事性探索.png','故事性探索（ai配合）.mp4','格温绘制录屏.mp4','棋子升星优化表现（blender完整工作流模拟） (1).mp4',
+          '棋子升星优化表现（blender完整工作流模拟） (2).mp4'
+        ]
+      }
+    },
+    files: []
+  },
+  {
+    id: 'cataigc',
+    title: 'AIGC 探索',
+    desc: 'AI 辅助创作与风格实验',
+    dir: 'AIGC相关',
+    cover: 'AIGC相关/og二次元/风格转换（ai手修） (2)_封面.jpeg',
+    locked: false,
+    tags: ['AIGC', 'AI 辅助', '实验'],
+    subCategories: {
+      'AI 比赛创作': {
+        dir: 'AIGC相关/ai游戏比赛创作',
+        cover: '比赛角色ai设计 (2)_封面.jpg',
+        files: [
+          'ai直接进入metahuman.png','比赛角色ai设计 (1).jpg','比赛角色ai设计 (2)_封面.jpg','比赛角色ai设计 (3).jpg','比赛角色ai设计 (4).jpg','比赛角色ai设计 (5).jpg','比赛角色ai设计 (6).png',
+          '游戏demo测试.png'
+        ]
+      },
+      '风格品味探索': {
+        dir: 'AIGC相关/金铲铲/风格品味探索',
+        cover: '迪士尼_海报01_封面.jpg',
+        files: [
+          '9月9日.mp4','cgt-20251225202107-qlsfq.mp4','zhonghuaxin_lightai_1757074550520__AIGC.mp4','无畏契约风格.png','王者玩象棋_选角心之钢永恩.jpg','王者玩象棋_选角格温.jpg',
+          '王者荣耀风格_海报网页01.jpg','王者荣耀风格_海报网页02.jpg','迪士尼_海报01_封面.jpg'
+        ]
+      },
+      '宣发探索': {
+        dir: 'AIGC相关/金铲铲/宣发探索',
+        cover: 'batai_封面.jpg',
+        files: [
+          '10月8.mp4','batai_封面.jpg','直播版.mp4'
+        ]
+      },
+      'OG 二次元': {
+        dir: 'AIGC相关/og二次元',
+        cover: '风格转换（ai手修） (2)_封面.jpeg',
+        files: [
+          '风格转换（ai手修） (1).jpeg','风格转换（ai手修） (2)_封面.jpeg'
+        ]
+      }
+    },
+    files: []
+  },
+  {
+    id: 'catawards',
+    title: '奖项获取',
+    desc: '获奖作品与荣誉记录',
+    dir: '奖项获取',
+    cover: '奖项获取/光子游戏创作大赛/游戏创作比赛获奖 (1)_封面.png',
+    locked: false,
+    tags: ['获奖', '荣誉'],
+    subCategories: {
+      '第五届游戏设计大赛': {
+        dir: '奖项获取/光子第五届游戏设计大赛',
+        cover: '美术设计大赛 (2)_封面.jpeg',
+        files: [
+          '美术设计大赛 (1).jpeg','美术设计大赛 (1).jpg','美术设计大赛 (2)_封面.jpeg','美术设计大赛 (3).jpeg','美术设计大赛 (4).jpeg'
+        ]
+      },
+      '游戏创作大赛': {
+        dir: '奖项获取/光子游戏创作大赛',
+        cover: '游戏创作比赛获奖 (1)_封面.png',
+        files: [
+          '游戏创作比赛获奖 (1)_封面.png','游戏创作比赛获奖 (2).png','设定.jpg'
+        ]
+      }
+    },
+    files: []
+  }
+];
+
+// ===== HELPERS =====
+function fp(dir, file) {
+  return BASE + '/' + dir + '/' + encodeURIComponent(file);
+}
+
+function countItems(cat) {
+  if (cat.subCategories) {
+    return Object.values(cat.subCategories).reduce((s, sub) => s + sub.files.length, 0);
+  }
+  return cat.files.length;
+}
+
+// ===== RENDER CATALOG =====
+function renderCatalog() {
+  const grid = document.getElementById('catalogGrid');
+  grid.innerHTML = CATALOG.map(cat => {
+    const count = countItems(cat);
+    const coverSrc = cat.cover ? BASE + '/' + cat.cover.split('/').map(encodeURIComponent).join('/') : '';
+    const subs = cat.subCategories ? Object.entries(cat.subCategories).filter(kv => kv[1].files.length > 0) : [];
+
+    let cardsHTML;
+    if (subs.length > 0) {
+      // 有子文件夹 → 展示子分类卡片（封面优先取带 _封面 的图）
+      cardsHTML = '<div class="sub-grid">' + subs.map(kv => {
+        const name = kv[0], data = kv[1];
+        const dir = data.dir || cat.dir;
+        const img = data.files.find(f => !/\.(mp4|webm|mov|avi|mkv)$/i.test(f));
+        const subCover = data.cover || img;
+        const src = subCover ? fp(dir, subCover) : coverSrc;
+        return `
+          <div class="sub-card fade-up" onclick="openCategory('${cat.id}', '${name}')">
+            <div class="sub-card-image">
+              <img src="${src}" alt="${name}" loading="lazy" onerror="this.style.opacity='0.2'">
+              <span class="sub-card-count">${data.files.length} 件</span>
+            </div>
+            <div class="sub-card-body">
+              <h4>${name}</h4>
+              <span>${cat.title}</span>
+            </div>
+          </div>`;
+      }).join('') + '</div>';
+    } else {
+      // 没有子文件夹 → 直接铺出所有作品
+      cardsHTML = '<div class="gallery home-thumbs">' + cat.files.map((f, i) => {
+        const src = fp(cat.dir, f);
+        const isVideo = /\.(mp4|webm|mov|avi|mkv)$/i.test(f);
+        if (isVideo) {
+          return `
+          <div class="gallery-item is-video fade-up" title="${f}" onclick="openHomeLightbox('${cat.id}', ${i})">
+            <video src="${src}" preload="metadata" muted></video>
+            <div class="play-icon"></div>
+          </div>`;
+        }
+        return `
+          <div class="gallery-item fade-up" title="${f}" onclick="openHomeLightbox('${cat.id}', ${i})">
+            <img src="${src}" alt="${f}" loading="lazy" onerror="this.parentElement.style.display='none'">
+          </div>`;
+      }).join('') + '</div>';
+    }
+
+    return `
+      <div class="cat-block fade-up">
+        <div class="cat-block-head">
+          <div class="cat-block-title">
+            <h3>${cat.title}</h3>
+            <span class="cat-num">${count} 件</span>
+          </div>
+        </div>
+        <div class="cat-block-desc">${cat.desc}</div>
+        <div class="cat-rule"></div>
+        ${cardsHTML}
+      </div>`;
+  }).join('');
+  observeFadeUps();
+}
+
+// ===== 首页缩略图直接开大图（不进分类页） =====
+function openHomeLightbox(catId, index) {
+  const cat = CATALOG.find(c => c.id === catId);
+  if (!cat) return;
+  currentImages = cat.files.map(f => fp(cat.dir, f));
+  currentIsVideo = cat.files.map(f => /\.(mp4|webm|mov|avi|mkv)$/i.test(f));
+  openLightbox(index);
+}
+
+// ===== OPEN CATEGORY =====
+function openCategory(catId, sub) {
+  const cat = CATALOG.find(c => c.id === catId);
+  if (!cat) return;
+
+  document.getElementById('catalogPage').classList.add('hidden');
+  const page = document.getElementById('categoryPage');
+  page.classList.add('active');
+
+  // Header
+  const count = countItems(cat);
+  document.getElementById('catHeader').innerHTML = `
+    <h2>${cat.title}</h2>
+    <p>${cat.desc} · ${count} 件作品</p>
+  `;
+
+  // Sub-tabs（默认"全部"，若从首页点了某个子分类则定位到它）
+  const tabsEl = document.getElementById('subTabs');
+  const hasSubs = cat.subCategories && Object.keys(cat.subCategories).length > 0;
+  let initial = 'all';
+  if (hasSubs) {
+    const subs = Object.keys(cat.subCategories).filter(k => cat.subCategories[k].files.length > 0);
+    if (sub && cat.subCategories[sub]) initial = sub;
+    tabsEl.innerHTML =
+      `<div class="sub-tab${initial === 'all' ? ' active' : ''}" onclick="showSub('all', '${catId}', this)">全部</div>` +
+      subs.map(s => `<div class="sub-tab${s === initial ? ' active' : ''}" onclick="showSub('${s}', '${catId}', this)">${s}</div>`).join('');
+  } else {
+    tabsEl.innerHTML = '';
+  }
+
+  // Gallery
+  renderGallery(cat, initial);
+  // Hide hero when entering category, reset scroll
+  document.querySelector('.hero').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+function renderGallery(cat, sub) {
+  const gallery = document.getElementById('gallery');
+
+  // 按子分类分组（保持文件夹层级）
+  let groups = [];
+  const hasSubs = cat.subCategories && Object.keys(cat.subCategories).length > 0;
+  if (hasSubs) {
+    const keys = Object.keys(cat.subCategories).filter(k => cat.subCategories[k].files.length > 0);
+    const picked = (sub && sub !== 'all' && cat.subCategories[sub]) ? [sub] : keys;
+    groups = picked.map(name => ({
+      name: name,
+      items: cat.subCategories[name].files.map(f => ({ file: f, dir: cat.subCategories[name].dir || cat.dir }))
+    }));
+  } else {
+    groups = [{ name: null, items: cat.files.map(f => ({ file: f, dir: cat.dir })) }];
+  }
+
+  // 拍平以便 lightbox 连续翻页
+  const flat = [];
+  groups.forEach(g => g.items.forEach(it => flat.push({ file: it.file, dir: it.dir, sub: g.name })));
+
+  currentImages = flat.map(it => fp(it.dir, it.file));
+  currentIsVideo = flat.map(it => /\.(mp4|webm|mov|avi|mkv)$/i.test(it.file));
+
+  let idx = -1;
+  gallery.innerHTML = groups.map(g => {
+    const cards = g.items.map(() => {
+      idx++;
+      const i = idx;
+      const isVideo = currentIsVideo[i];
+      const src = currentImages[i];
+      const file = flat[i].file;
+      if (isVideo) {
+        return `
+          <div class="gallery-item is-video fade-up" onclick="openLightbox(${i})">
+            <video src="${src}" preload="metadata" muted></video>
+            <div class="play-icon"></div>
+            <div class="gallery-item-label">${file}</div>
+          </div>`;
+      }
+      return `
+        <div class="gallery-item fade-up" onclick="openLightbox(${i})">
+          <img src="${src}" alt="${file}" loading="lazy" onerror="this.parentElement.style.display='none'">
+          <div class="gallery-item-label">${file}</div>
+        </div>`;
+    }).join('');
+
+    const head = g.name
+      ? `<div class="sub-group-head"><h4>${g.name}</h4><span class="sub-group-count">${g.items.length} 件</span><span class="sub-rule"></span></div>`
+      : '';
+
+    return `<div class="sub-group">${head}<div class="gallery">${cards}</div></div>`;
+  }).join('');
+
+  observeFadeUps();
+}
+
+function showSub(sub, catId, el) {
+  document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const cat = CATALOG.find(c => c.id === catId);
+  renderGallery(cat, sub);
+}
+
+// ===== HOME =====
+function goHome() {
+  document.getElementById('categoryPage').classList.remove('active');
+  document.getElementById('catalogPage').classList.remove('hidden');
+  document.querySelector('.hero').style.display = '';
+  const catalogEl = document.getElementById('catalogPage');
+  if (catalogEl) {
+    const y = catalogEl.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+}
+
+// ===== BACK (browser history) =====
+function goBack() {
+  document.getElementById('categoryPage').classList.remove('active');
+  document.getElementById('catalogPage').classList.remove('hidden');
+  document.querySelector('.hero').style.display = '';
+  const catalogEl = document.getElementById('catalogPage');
+  if (catalogEl) {
+    const y = catalogEl.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+}
+
+// ===== LIGHTBOX =====
+function openLightbox(index) {
+  currentLightboxIndex = index;
+  const lb = document.getElementById('lightbox');
+  const imgEl = document.getElementById('lightboxImg');
+  const vidEl = document.getElementById('lightboxVideo');
+
+  if (currentIsVideo[index]) {
+    imgEl.style.display = 'none';
+    vidEl.style.display = 'block';
+    vidEl.src = currentImages[index];
+    vidEl.play().catch(() => {});
+  } else {
+    vidEl.style.display = 'none';
+    vidEl.pause();
+    vidEl.src = '';
+    imgEl.style.display = 'block';
+    imgEl.src = currentImages[index];
+  }
+  document.getElementById('lightboxCounter').textContent = `${index + 1} / ${currentImages.length}`;
+  lb.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox')) return;
+  const vidEl = document.getElementById('lightboxVideo');
+  vidEl.pause();
+  vidEl.src = '';
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('active')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navLightbox(-1);
+  if (e.key === 'ArrowRight') navLightbox(1);
+});
+
+function navLightbox(dir) {
+  currentLightboxIndex = (currentLightboxIndex + dir + currentImages.length) % currentImages.length;
+  const imgEl = document.getElementById('lightboxImg');
+  const vidEl = document.getElementById('lightboxVideo');
+
+  if (currentIsVideo[currentLightboxIndex]) {
+    imgEl.style.display = 'none';
+    vidEl.style.display = 'block';
+    vidEl.src = currentImages[currentLightboxIndex];
+    vidEl.play().catch(() => {});
+  } else {
+    vidEl.style.display = 'none';
+    vidEl.pause();
+    vidEl.src = '';
+    imgEl.style.display = 'block';
+    imgEl.src = currentImages[currentLightboxIndex];
+  }
+  document.getElementById('lightboxCounter').textContent = `${currentLightboxIndex + 1} / ${currentImages.length}`;
+}
+
+// ===== SCROLL ANIMATIONS =====
+function observeFadeUps() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((en, i) => {
+      if (en.isIntersecting) {
+        setTimeout(() => en.target.classList.add('visible'), i * 80);
+        obs.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up:not(.visible)').forEach(el => obs.observe(el));
+}
+
+// NAV scroll effect
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ===== INIT =====
+renderCatalog();
+</script>
+</body>
+</html>

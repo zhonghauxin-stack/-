@@ -1,0 +1,9 @@
+# 公司内部资料，禁止入库
+d10申请zhonghuaxin.pptx
+d10申请zhonghuaxin/
+
+# 临时产物
+generated-images/
+*.bak_*
+.workbuddy/
+analyze_pptx.py
